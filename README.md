@@ -1,227 +1,92 @@
-# Retail Sales Analysis SQL Project
+# Retail Sales Analysis Power BI Project
 
 ## Project Overview
 
 **Project Title**: Retail Sales Analysis  
 **Level**: Beginner  
-**Database**: `p1_retail_db`
+**File name**: `01_Retail sales analysis.pbix`
 
-This project is designed to demonstrate SQL skills and techniques typically used by data analysts to explore, clean, and analyze retail sales data. The project involves setting up a retail sales database, performing exploratory data analysis (EDA), and answering specific business questions through SQL queries. This project is ideal for those who are starting their journey in data analysis and want to build a solid foundation in SQL.
+This project aims to showcase the capabilities and methodologies employed by data analysts in Power BI for examining, refining, and interpreting retail sales information. It is particularly suited for beginners in data analysis who wish to establish a strong proficiency in Power BI.
+
 
 ## Objectives
 
-1. **Set up a retail sales database**: Create and populate a retail sales database with the provided sales data.
-2. **Data Cleaning**: Identify and remove any records with missing or null values.
-3. **Exploratory Data Analysis (EDA)**: Perform basic exploratory data analysis to understand the dataset.
-4. **Business Analysis**: Use SQL to answer specific business questions and derive insights from the sales data.
+1. **Establish a Retail Sales Database: Construct a retail sales database**: The dataset is `SQL - Retail Sales Analysis_utf.csv`
+2. **Data Cleansing**: Detect and eliminate records that contain missing or null values.
+3. **Perform Business Analysis**: Utilize Power BI to respond to targeted business queries and extract meaningful insights from the sales data.
 
 ## Project Structure
 
-### 1. Database Setup
+### 1. Dataset cleaning
 
-- **Database Creation**: The project starts by creating a database named `p1_retail_db`.
-- **Table Creation**: A table named `retail_sales` is created to store the sales data. The table structure includes columns for transaction ID, sale date, sale time, customer ID, gender, age, product category, quantity sold, price per unit, cost of goods sold (COGS), and total sale amount.
+**a. Promote First Row as Headers:**
 
-```sql
-CREATE DATABASE p1_retail_db;
+In Power BI, when you load data, sometimes the first row of your dataset contains the column headers. To promote this row as the headers, go to the "Home" tab in the Power Query Editor and click on "Use First Row as Headers." This action will convert the first row of data into the column names.
 
-CREATE TABLE retail_sales
-(
-    transactions_id INT PRIMARY KEY,
-    sale_date DATE,	
-    sale_time TIME,
-    customer_id INT,	
-    gender VARCHAR(10),
-    age INT,
-    category VARCHAR(35),
-    quantity INT,
-    price_per_unit FLOAT,	
-    cogs FLOAT,
-    total_sale FLOAT
-);
-```
+**b. Rename the Column Names:**
 
-### 2. Data Exploration & Cleaning
+To rename columns, select the column you wish to rename in the Power Query Editor. Right-click on the column header and choose "Rename," or double-click the column header. Enter the new name for the column and press Enter. This step helps in making the column names more meaningful and easier to understand.
 
-- **Record Count**: Determine the total number of records in the dataset.
-- **Customer Count**: Find out how many unique customers are in the dataset.
-- **Category Count**: Identify all unique product categories in the dataset.
-- **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
+**c. Check and Change the Data Types:**
 
-```sql
-SELECT COUNT(*) FROM retail_sales;
-SELECT COUNT(DISTINCT customer_id) FROM retail_sales;
-SELECT DISTINCT category FROM retail_sales;
+Ensuring that each column has the correct data type is crucial for accurate data analysis. In the Power Query Editor, you can see the current data type of each column next to the column name. To change a data type, click on the data type icon and select the appropriate type (e.g., text, number, date). This step ensures that Power BI processes the data correctly.
 
-SELECT * FROM retail_sales
-WHERE 
-    sale_date IS NULL OR sale_time IS NULL OR customer_id IS NULL OR 
-    gender IS NULL OR age IS NULL OR category IS NULL OR 
-    quantity IS NULL OR price_per_unit IS NULL OR cogs IS NULL;
+**d. Use Detect Data Types:**
 
-DELETE FROM retail_sales
-WHERE 
-    sale_date IS NULL OR sale_time IS NULL OR customer_id IS NULL OR 
-    gender IS NULL OR age IS NULL OR category IS NULL OR 
-    quantity IS NULL OR price_per_unit IS NULL OR cogs IS NULL;
-```
+Power BI offers a feature to automatically detect data types. In the Power Query Editor, go to the "Transform" tab and click on "Detect Data Type." Power BI will analyze the data in each column and assign the most appropriate data type. This feature can save time and ensure that data types are set correctly.
 
-### 3. Data Analysis & Findings
+**e. Remove Null Values in All Columns:**
 
-The following SQL queries were developed to answer specific business questions:
+To clean your dataset by removing rows with null values, select the columns you want to clean in the Power Query Editor. Go to the "Home" tab, click on "Remove Rows," and then choose "Remove Blank Rows." Alternatively, you can filter out null values by clicking on the drop-down arrow in the column header, unchecking the "null" option, and clicking "OK." This step ensures that your dataset is free from incomplete records, which can affect analysis accuracy.
 
-1. **Write a SQL query to retrieve all columns for sales made on '2022-11-05**:
-```sql
-SELECT *
-FROM retail_sales
-WHERE sale_date = '2022-11-05';
-```
+### 2. Create the visuals
 
-2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
-```sql
-SELECT 
-  *
-FROM retail_sales
-WHERE 
-    category = 'Clothing'
-    AND 
-    TO_CHAR(sale_date, 'YYYY-MM') = '2022-11'
-    AND
-    quantity >= 4
-```
+**I. Cards:** 
+1. Number of customers
+2. Total Sales
+3. Number of transactions
 
-3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
-```sql
-SELECT 
-    category,
-    SUM(total_sale) as net_sale,
-    COUNT(*) as total_orders
-FROM retail_sales
-GROUP BY 1
-```
+**II. Filters:**  
+1. Date
+2. Age
+3. Gender
+4. Category
+   
+**III. Pie Chart:**
+1. Number of customers by category
 
-4. **Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.**:
-```sql
-SELECT
-    ROUND(AVG(age), 2) as avg_age
-FROM retail_sales
-WHERE category = 'Beauty'
-```
+**IV. Line Chart:**
+1. Sales by month and year
 
-5. **Write a SQL query to find all transactions where the total_sale is greater than 1000.**:
-```sql
-SELECT * FROM retail_sales
-WHERE total_sale > 1000
-```
+**V. Column Chart:**
+1. Sales by category
+2. Transactions by gender
 
-6. **Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.**:
-```sql
-SELECT 
-    category,
-    gender,
-    COUNT(*) as total_trans
-FROM retail_sales
-GROUP 
-    BY 
-    category,
-    gender
-ORDER BY 1
-```
-
-7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
-```sql
-SELECT 
-       year,
-       month,
-    avg_sale
-FROM 
-(    
-SELECT 
-    EXTRACT(YEAR FROM sale_date) as year,
-    EXTRACT(MONTH FROM sale_date) as month,
-    AVG(total_sale) as avg_sale,
-    RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date) ORDER BY AVG(total_sale) DESC) as rank
-FROM retail_sales
-GROUP BY 1, 2
-) as t1
-WHERE rank = 1
-```
-
-8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
-```sql
-SELECT 
-    customer_id,
-    SUM(total_sale) as total_sales
-FROM retail_sales
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 5
-```
-
-9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
-```sql
-SELECT 
-    category,    
-    COUNT(DISTINCT customer_id) as cnt_unique_cs
-FROM retail_sales
-GROUP BY category
-```
-
-10. **Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**:
-```sql
-WITH hourly_sale
-AS
-(
-SELECT *,
-    CASE
-        WHEN EXTRACT(HOUR FROM sale_time) < 12 THEN 'Morning'
-        WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-        ELSE 'Evening'
-    END as shift
-FROM retail_sales
-)
-SELECT 
-    shift,
-    COUNT(*) as total_orders    
-FROM hourly_sale
-GROUP BY shift
-```
+**VI. Area Chart:**
+1. Sales by Age
 
 ## Findings
 
-- **Customer Demographics**: The dataset includes customers from various age groups, with sales distributed across different categories such as Clothing and Beauty.
-- **High-Value Transactions**: Several transactions had a total sale amount greater than 1000, indicating premium purchases.
-- **Sales Trends**: Monthly analysis shows variations in sales, helping identify peak seasons.
-- **Customer Insights**: The analysis identifies the top-spending customers and the most popular product categories.
-
-## Reports
-
-- **Sales Summary**: A detailed report summarizing total sales, customer demographics, and category performance.
-- **Trend Analysis**: Insights into sales trends across different months and shifts.
-- **Customer Insights**: Reports on top customers and unique customer counts per category.
+- **Number of customers**: There are a total of 155 unique customers
+- **Total sales**: The total sales during the period is 908K
+- **Number of transactions**: The total number of transactions is 1987
+- **High-Value Transactions**: Numerous transactions exceeded a total sale amount of $1000. These transactions signify luxury purchases.
+- **Sales Trends**: A monthly review of sales data reveals fluctuations. This analysis enables the identification of peak sales periods.
 
 ## Conclusion
 
-This project serves as a comprehensive introduction to SQL for data analysts, covering database setup, data cleaning, exploratory data analysis, and business-driven SQL queries. The findings from this project can help drive business decisions by understanding sales patterns, customer behavior, and product performance.
+This project serves as a comprehensive introduction to Power BI for data analysts, covering data import, data transformation, exploratory data analysis, and business-driven visualizations. The insights derived from this project can help drive business decisions by understanding sales patterns, customer behavior, and product performance.
 
 ## How to Use
 
 1. **Clone the Repository**: Clone this project repository from GitHub.
-2. **Set Up the Database**: Run the SQL scripts provided in the `database_setup.sql` file to create and populate the database.
-3. **Run the Queries**: Use the SQL queries provided in the `analysis_queries.sql` file to perform your analysis.
-4. **Explore and Modify**: Feel free to modify the queries to explore different aspects of the dataset or answer additional business questions.
+2. **Download the dataset**: Download the dataset `SQL - Retail Sales Analysis_utf.csv` to to your local computer and import to Power BI
+3. **Explore and Modify**: Feel free to modify the queries to explore different aspects of the dataset or answer additional business questions.
 
-## Author - Zero Analyst
+## Author - Susitha Arulmozhi
 
-This project is part of my portfolio, showcasing the SQL skills essential for data analyst roles. If you have any questions, feedback, or would like to collaborate, feel free to get in touch!
+This project is part of my portfolio, showcasing the Power BI skills essential for data analyst roles. If you have any questions, feedback, or would like to collaborate, feel free to get in touch!
 
-### Stay Updated and Join the Community
-
-For more content on SQL, data analysis, and other data-related topics, make sure to follow me on social media and join our community:
-
-- **YouTube**: [Subscribe to my channel for tutorials and insights](https://www.youtube.com/@zero_analyst)
-- **Instagram**: [Follow me for daily tips and updates](https://www.instagram.com/zero_analyst/)
-- **LinkedIn**: [Connect with me professionally](https://www.linkedin.com/in/najirr)
-- **Discord**: [Join our community to learn and grow together](https://discord.gg/36h5f2Z5PK)
+- **LinkedIn**: [Connect with me professionally](https://www.linkedin.com/in/susitha-a)
 
 Thank you for your support, and I look forward to connecting with you!
